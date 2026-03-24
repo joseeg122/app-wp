@@ -151,7 +151,16 @@
       function ensureMusicPlays() {
         if (bgMusic.paused) {
           bgMusic.volume = 0.3;
-          bgMusic.play().catch(() => {});
+          bgMusic.muted = false;
+          bgMusic.currentTime = 0;
+          bgMusic
+            .play()
+            .then(() => {})
+            .catch(() => {
+              // Algunos navegadores móviles bloquean autoplay, se pide interacción adicional.
+              bgMusic.muted = true;
+              bgMusic.play().catch(() => {});
+            });
         }
       }
 
@@ -164,6 +173,18 @@
         ensureMusicPlays();
         gameLoop();
       }
+
+      function handleUserGesture() {
+        if (bgMusic.paused) {
+          bgMusic.volume = 0.3;
+          bgMusic.muted = false;
+          bgMusic.currentTime = 0;
+          bgMusic.play().catch(() => {});
+        }
+      }
+
+      window.addEventListener('touchstart', handleUserGesture, { once: true });
+      window.addEventListener('click', handleUserGesture, { once: true });
 
       function restartGame() {
         startGame();
