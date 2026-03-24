@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flappy Bird - Juego</title>
+    <link rel="stylesheet" href="flappy.css" />
+  </head>
+  <body>
+    <div id="game-area">
+      <div id="score">Puntuacion: 0</div>
+      <div id="bestScore">Mejor Puntuacion: 0</div>
+      <canvas id="gameCanvas" width="400" height="600"></canvas>
+      <div id="startOverlay">
+        <div>Presiona Iniciar para comenzar</div>
+        <button id="startBtn">Iniciar Juego</button>
+      </div>
+      <div id="gameOver">
+        <p>¡Juego Terminado!</p>
+        <p>Haz clic para reiniciar</p>
+        <button id="restartBtn">Reiniciar</button>
+      </div>
+    </div>
+    <audio id="dieSound" src="dead.mp3" preload="auto"></audio>
+    <audio id="bgMusic" src="bg.mp3" preload="auto" loop></audio>
+    <script>
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const scoreElement = document.getElementById('score');
+      const bestScoreElement = document.getElementById('bestScore');
+      const gameOverElement = document.getElementById('gameOver');
+      const restartBtn = document.getElementById('restartBtn');
+      const startOverlay = document.getElementById('startOverlay');
+      const startBtn = document.getElementById('startBtn');
+      const dieSound = document.getElementById('dieSound');
+      const bgMusic = document.getElementById('bgMusic');
+
+      let bird = { x: 60, y: 300, w: 28, h: 20, velocity: 0, gravity: 0.25, jump: -11 };
+      let pipes = [];
+      let score = 0;
+      let bestScore = parseInt(localStorage.getItem('flappyBestScore')) || 0;
+      let gameRunning = false;
+      let gameStarted = false;
+      let soundPlayed = false;
+
+      bestScoreElement.textContent = 'Mejor Puntuacion: ' + bestScore;
+
+      function resetGameState() {
+        bird = { x: 60, y: 300, w: 28, h: 20, velocity: 0, gravity: 0.25, jump: -11 };
+        pipes = [];
+        score = 0;
+        soundPlayed = false;
+        scoreElement.textContent = 'Puntuacion: 0';
+        bestScoreElement.textContent = 'Mejor Puntuacion: ' + bestScore;
+      }
+// Dibujo base para indicar pajaro en sitio.
+       ctx.clearRect(0, 0, canvas.width, canvas.height);
+       drawBird();
+      function drawBird() {
+        ctx.fillStyle = '#ffeb3b';
+        ctx.fillRect(bird.x, bird.y, bird.w, bird.h);
+        ctx.strokeStyle = '#ef6c00';
+        ctx.strokeRect(bird.x, bird.y, bird.w, bird.h);
+      }
+// Dibujo base para indicar pajaro en sitio.
+       ctx.clearRect(0, 0, canvas.width, canvas.height);
+       drawBird();
+      function drawPipes() {
+        ctx.fillStyle = '#2e7d32';
+        pipes.forEach(pipe => {
+          ctx.fillRect(pipe.x, 0, 50, pipe.top);
+          ctx.fillRect(pipe.x, pipe.bottom, 50, canvas.height - pipe.bottom);
+        });
+      }
+// Dibujo base para indicar pajaro en sitio.
+       ctx.clearRect(0, 0, canvas.width, canvas.height);
+       drawBird();
+       drawPipes();
+       function updateBird() {
+        bird.velocity += bird.gravity;
+        bird.y += bird.velocity;
+      }
+      function updateBird() {
+        bird.velocity += bird.gravity;
+        bird.y += bird.velocity;
+      }
+
+      function addPipe() {
+        const gap = 150;
+        const min = 60;
+        const max = canvas.height - gap - 60;
+        const top = Math.floor(Math.random() * (max - min + 1)) + min;
+        pipes.push({ x: canvas.width, top, bottom: top + gap, passed: false });
+      }
+
+      function updatePipes() {
+        if (!pipes.length || pipes[pipes.length - 1].x < 220) {
+          addPipe();
+        }
+
+        pipes.forEach((pipe, idx) => {
+          pipe.x -= 2.5;
+
+          if (!pipe.passed && pipe.x + 50 < bird.x) {
+            pipe.passed = true;
+            score++;
+            scoreElement.textContent = 'Puntuaci�n: ' + score;
+          }
+
+          if (pipe.x + 50 < 0) pipes.splice(idx, 1);
+        });
+      }
+
+      function checkCollision() {
+        if (bird.y < 0 || bird.y + bird.h > canvas.height) return endGame();
+        return pipes.some(pipe => {
+          if (bird.x < pipe.x + 50 && bird.x + bird.w > pipe.x) {
+            if (bird.y < pipe.top || bird.y + bird.h > pipe.bottom) {
+              endGame();
+              return true;
+            }
+          }
+          return false;
+        });
+      }
+
+      function endGame() {
+        if (!gameRunning) return;
+        gameRunning = false;
+
+        if (!bgMusic.paused) {
+          bgMusic.pause();
+          bgMusic.currentTime = 0;
+        }
+
+        if (!soundPlayed) {
+          dieSound.play().catch(() => {});
+          soundPlayed = true;
+        }
+
+        if (score > bestScore) {
+          bestScore = score;
+          localStorage.setItem('flappyBestScore', bestScore);
+          bestScoreElement.textContent = 'Mejor Puntuaci�n: ' + bestScore;
+        }
+
+        gameOverElement.style.display = 'block';
+      }
+
+      function gameLoop() {
+        if (!gameRunning) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        updateBird();
+        updatePipes();
+        if (!checkCollision()) {
+          drawBird();
+          drawPipes();
+        }
+        requestAnimationFrame(gameLoop);
+      }
+
+      function ensureMusicPlays() {
+        if (bgMusic.paused) {
+          bgMusic.volume = 0.3;
+          bgMusic.play().catch(() => {});
+        }
+      }
+
+      function startGame() {
+        resetGameState();
+        startOverlay.style.display = 'none';
+        gameOverElement.style.display = 'none';
+        gameStarted = true;
+        gameRunning = true;
+        ensureMusicPlays();
+        gameLoop();
+      }
+
+      function restartGame() {
+        startGame();
+      }
+      
+      window.addEventListener('keydown', (event) => {
+        if (event.code === 'Space') {
+          if (!gameStarted) return startGame();
+          if (!gameRunning) return restartGame();
+          bird.velocity = bird.jump;
+        }
+      });
+
+      canvas.addEventListener('click', () => {
+        if (!gameStarted) return startGame();
+        if (!gameRunning) return restartGame();
+        bird.velocity = bird.jump;
+      });
+
+      startBtn.addEventListener('click', startGame);
+      restartBtn.addEventListener('click', restartGame);
+
+      // Inicialmente: mostrar inicio y ocultar game over.
+      gameOverElement.style.display = 'none';
+      startOverlay.style.display = 'flex';
+
+      // Dibujo base para indicar pajaro en sitio.
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBird();
+    </script>
+</body>
+</html>
