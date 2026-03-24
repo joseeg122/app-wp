@@ -35,7 +35,7 @@
       const dieSound = document.getElementById('dieSound');
       const bgMusic = document.getElementById('bgMusic');
 
-      let bird = { x: 60, y: 300, w: 28, h: 20, velocity: 0, gravity: 0.25, jump: -11 };
+      let bird = { x: 60, y: 300, w: 28, h: 20, velocity: 0, gravity: 0.25, jump: -4.6 };
       let pipes = [];
       let score = 0;
       let bestScore = parseInt(localStorage.getItem('flappyBestScore')) || 0;
@@ -179,7 +179,7 @@
       function restartGame() {
         startGame();
       }
-      
+
       window.addEventListener('keydown', (event) => {
         if (event.code === 'Space') {
           if (!gameStarted) return startGame();
