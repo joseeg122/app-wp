@@ -13,8 +13,10 @@
       <canvas id="gameCanvas" width="400" height="600"></canvas>
       <div id="recordToast" class="toast">¡Nuevo récord! 🎉</div>
       <div id="startOverlay">
-        <div>Presiona Iniciar para comenzar</div>
-        <button id="startBtn">Iniciar Juego</button>
+        <div id="gameTitleStart" class="game-title">🐦 FLAPPY BIRD 🐦</div>
+        <div id="bestScoreStart" class="best-score-display">Mejor Puntuación: 0</div>
+        <div class="start-message">Presiona Iniciar para comenzar</div>
+        <button id="startBtn" class="start-button">Iniciar Juego</button>
       </div>
       <div id="gameOver">
         <p>¡Juego Terminado!</p>
@@ -29,6 +31,7 @@
       const ctx = canvas.getContext('2d');
       const scoreElement = document.getElementById('score');
       const bestScoreElement = document.getElementById('bestScore');
+      const bestScoreStartElement = document.getElementById('bestScoreStart');
       const gameOverElement = document.getElementById('gameOver');
       const restartBtn = document.getElementById('restartBtn');
       const startOverlay = document.getElementById('startOverlay');
@@ -45,6 +48,7 @@
       let soundPlayed = false;
 
       bestScoreElement.textContent = 'Mejor Puntuacion: ' + bestScore;
+      bestScoreStartElement.textContent = 'Mejor Puntuación: ' + bestScore;
 
       function resetGameState() {
         bird = { x: 60, y: 300, w: 28, h: 20, velocity: 0, gravity: 0.25, jump: -4.6 };
@@ -142,6 +146,7 @@
           bestScore = score;
           localStorage.setItem('flappyBestScore', bestScore);
           bestScoreElement.textContent = 'Mejor Puntuación: ' + bestScore;
+          bestScoreStartElement.textContent = 'Mejor Puntuación: ' + bestScore;
           showRecordToast();
         }
 

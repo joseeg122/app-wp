@@ -75,33 +75,69 @@ body {
   height: 100%;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(40, 120, 140, 0.7) 100%);
   justify-content: center;
   align-items: center;
   flex-direction: column;
   color: white;
-  font-size: 24px;
   text-align: center;
   z-index: 10;
 }
 
-#startOverlay div {
-  margin-bottom: 20px;
+#gameTitleStart {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+  letter-spacing: 2px;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-#startOverlay button {
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+#bestScoreStart {
+  font-size: 28px;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px 30px;
+  border-radius: 10px;
+  border: 2px solid rgba(76, 175, 80, 0.6);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+}
+
+.start-message {
+  font-size: 24px;
+  margin-bottom: 25px;
+  opacity: 0.9;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.start-button {
   border: none;
-  background: #4caf50;
+  background: linear-gradient(135deg, #4caf50, #45a049);
   color: white;
-  padding: 12px 24px;
-  font-size: 18px;
+  padding: 14px 32px;
+  font-size: 20px;
   cursor: pointer;
-  border-radius: 5px;
-  margin-top: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-#startOverlay button:hover {
-  background: #45a049;
+.start-button:hover {
+  background: linear-gradient(135deg, #45a049, #3d8b40);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.start-button:active {
+  transform: translateY(-1px);
 }
 
 #recordToast {
@@ -142,7 +178,24 @@ body {
     font-size: 24px;
   }
 
-  #startOverlay {
-    font-size: 20px;
+  #gameTitleStart {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  #bestScoreStart {
+    font-size: 22px;
+    margin-bottom: 30px;
+    padding: 12px 24px;
+  }
+
+  .start-message {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .start-button {
+    padding: 12px 24px;
+    font-size: 16px;
   }
 }
