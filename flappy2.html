@@ -29,6 +29,7 @@
       </div>
     </div>
     <audio id="bgMusic" src="bg.mp3" preload="auto" loop></audio>
+    <audio id="dieSound" src="die.mp3" preload="auto"></audio>
     <script>
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
@@ -43,7 +44,7 @@
       const startOverlay = document.getElementById('startOverlay');
       const startBtn = document.getElementById('startBtn');
       const bgMusic = document.getElementById('bgMusic');
-
+      const dieSound = document.getElementById('dieSound');
       // Set canvas to full screen
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
