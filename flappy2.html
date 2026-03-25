@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Flappy Bird - Juego</title>
     <link rel="stylesheet" href="flappy.css" />
   </head>
@@ -10,7 +10,7 @@
     <div id="game-area">
       <div id="score">Puntuacion: 0</div>
       <div id="bestScore">Mejor Puntuacion: 0</div>
-      <canvas id="gameCanvas" width="400" height="600"></canvas>
+      <canvas id="gameCanvas"></canvas>
       <div id="recordToast" class="toast">¡Nuevo récord! 🎉</div>
       <div id="startOverlay">
         <div id="gameTitleStart" class="game-title"> FLAPPY BIRD </div>
@@ -46,7 +46,13 @@
       const dieSound = document.getElementById('dieSound');
       const bgMusic = document.getElementById('bgMusic');
 
-      let bird = { x: 60, y: 300, w: 28, h: 20, velocity: 0, gravity: 0.25, jump: -4.6 };
+      // Set canvas to full screen
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const scaleX = canvas.width / 400;
+      const scaleY = canvas.height / 600;
+
+      let bird = { x: 60 * scaleX, y: canvas.height / 2, w: 28 * scaleX, h: 20 * scaleY, velocity: 0, gravity: 0.25 * scaleY, jump: -4.6 * scaleY };
       let pipes = [];
       let score = 0;
       let bestScore = parseInt(localStorage.getItem('flappyBestScore')) || 0;
@@ -58,7 +64,7 @@
       bestScoreStartElement.textContent = 'Mejor Puntuación: ' + bestScore;
 
       function resetGameState() {
-        bird = { x: 60, y: 300, w: 28, h: 20, velocity: 0, gravity: 0.25, jump: -4.6 };
+        bird = { x: 60 * scaleX, y: canvas.height / 2, w: 28 * scaleX, h: 20 * scaleY, velocity: 0, gravity: 0.25 * scaleY, jump: -4.6 * scaleY };
         pipes = [];
         score = 0;
         soundPlayed = false;
@@ -77,8 +83,8 @@
       function drawPipes() {
         ctx.fillStyle = '#2e7d32';
         pipes.forEach(pipe => {
-          ctx.fillRect(pipe.x, 0, 50, pipe.top);
-          ctx.fillRect(pipe.x, pipe.bottom, 50, canvas.height - pipe.bottom);
+          ctx.fillRect(pipe.x, 0, 50 * scaleX, pipe.top);
+          ctx.fillRect(pipe.x, pipe.bottom, 50 * scaleX, canvas.height - pipe.bottom);
         });
       }
 
@@ -88,35 +94,35 @@
       }
 
       function addPipe() {
-        const gap = 150;
-        const min = 60;
-        const max = canvas.height - gap - 60;
+        const gap = 150 * scaleY;
+        const min = 60 * scaleY;
+        const max = canvas.height - gap - 60 * scaleY;
         const top = Math.floor(Math.random() * (max - min + 1)) + min;
         pipes.push({ x: canvas.width, top, bottom: top + gap, passed: false });
       }
 
       function updatePipes() {
-        if (!pipes.length || pipes[pipes.length - 1].x < 220) {
+        if (!pipes.length || pipes[pipes.length - 1].x < 220 * scaleX) {
           addPipe();
         }
 
         pipes.forEach((pipe, idx) => {
-          pipe.x -= 2.5;
+          pipe.x -= 2.5 * scaleX;
 
-          if (!pipe.passed && pipe.x + 50 < bird.x) {
+          if (!pipe.passed && pipe.x + 50 * scaleX < bird.x) {
             pipe.passed = true;
             score++;
             scoreElement.textContent = 'Puntuación: ' + score;
           }
 
-          if (pipe.x + 50 < 0) pipes.splice(idx, 1);
+          if (pipe.x + 50 * scaleX < 0) pipes.splice(idx, 1);
         });
       }
 
       function checkCollision() {
         if (bird.y < 0 || bird.y + bird.h > canvas.height) return endGame();
         return pipes.some(pipe => {
-          if (bird.x < pipe.x + 50 && bird.x + bird.w > pipe.x) {
+          if (bird.x < pipe.x + 50 * scaleX && bird.x + bird.w > pipe.x) {
             if (bird.y < pipe.top || bird.y + bird.h > pipe.bottom) {
               endGame();
               return true;
