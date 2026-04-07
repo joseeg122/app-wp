@@ -19,7 +19,7 @@ export function createMetrics(canvasWidth, canvasHeight) {
     jumpPower: -5 * scaleY,
     maxFallSpeed: 3.8 * scaleY,
     pipeWidth: 50 * scaleX,
-    pipeSpeed: 1.5* scaleX,
+    pipeSpeed: 1* scaleX,
     pipeGap: 150 * scaleY,
     minPipeTop: 60 * scaleY,
     spawnDistance: 220 * scaleX,
