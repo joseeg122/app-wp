@@ -8,6 +8,10 @@
   ],
   "routes": [
     {
+      "src": "/scripts/(.*)",
+      "dest": "/scripts/$1"
+    },
+    {
       "src": "/flappy.css",
       "dest": "/flappy.css"
     },
