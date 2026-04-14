@@ -5,7 +5,7 @@ export function renderFrame(ctx, state) {
   drawPipes(ctx, state.pipes, state.metrics.pipeWidth, state.canvas.height);
 }
 
-// Dibuja el ave con relleno y borde.
+// Dibuja el pajaro con relleno y borde.
 function drawBird(ctx, bird) {
   ctx.fillStyle = '#ffeb3b';
   ctx.fillRect(bird.x, bird.y, bird.w, bird.h);

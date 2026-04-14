@@ -39,12 +39,12 @@ export function resetRound(state) {
   state.score = 0;
 }
 
-// Persiste el mejor puntaje actual en almacenamiento local.
+// mantiene el mejor puntaje actual en almacenamiento local.
 export function persistBestScore(score) {
   localStorage.setItem(STORAGE_KEYS.bestScore, String(score));
 }
 
-// Actualiza y guarda record unicamente cuando se supera el valor previo.
+// Actualiza y guarda el mejor puntaje unicamente cuando se supera el valor previo.
 export function updateBestScoreIfNeeded(state) {
   if (state.score > state.bestScore) {
     state.bestScore = state.score;
